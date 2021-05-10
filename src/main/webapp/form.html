@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD - Pacient</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/form.css">
+</head>
+
+<body>
+    <div class="row h-100 w-100 d-inline-block">
+        <div class="col-12 h-100 d-flex justify-content-center align-items-center">
+            <div class="card" style="width: 40rem;">
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <a href="./index.html" class="text-decoration-none mb-5">Lista de Pacientes</a>
+                        </div>
+
+                        <h2 id="title-page">Cadastro do paciente</h2>
+                        <div class="mb-3">
+                            <input type="number" class="form-control" placeholder="Id" name="pacient-id" id="pacient-id"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" placeholder="Nome" name="pacient-name"
+                                id="pacient-name" required>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="number" class="form-control" placeholder="Idade" min="0" id="pacient-age"
+                                name="pacient-age" aria-describedby="pacient-age" required>
+                            <span class="input-group-text" id="pacient-age">anos</span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="number" placeholder="Peso" class="form-control" id="pacient-weight" min="0"
+                                name="pacient-weight" aria-describedby="pacient-weight" required>
+                            <span class="input-group-text" id="pacient-weight">kg</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submit-create">Cadastrar</button>
+                        <button type="submit" class="btn btn-primary" id="submit-save">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $("#submit-create").click(function (e) {
+        submitForm(e)
+    });
+
+    $("#submit-save").click(function (e) {
+        saveForm(e)
+    });
+
+    function submitForm(e) {
+        e.preventDefault();
+        $.ajax({
+            method: "post", url: "/FTT-WEB-091/pacient", data: $("form").serializeArray()
+        }).then(() => {
+            location.href = "./index.html"
+        })
+    }
+
+    function saveForm(e) {
+        e.preventDefault();
+        let data = $("form").serializeArray()
+
+        let params = new URLSearchParams(location.search)
+        let id = params.get("pacient-id")
+
+        data.push({ name: "pacient-id", value: id})
+        let url = "/FTT-WEB-091/pacient?"
+
+        data.forEach(dataValue => {
+            url += `${dataValue.name}=${dataValue.value}&`
+        })
+
+        $.ajax({
+            method: "put", url
+        }).then(() => {
+            location.href = "./index.html"
+        })
+    }
+
+    function isEdit() {
+        let params = new URLSearchParams(location.search)
+        let id = params.get("pacient-id")
+
+        if (id) {
+            $('#title-page').text("Atualizar Paciente")
+            $('#pacient-id').prop('disabled', true)
+            $('#pacient-id').show();
+            $('#submit-create').hide();
+            $('#pacient-id').attr('value', id);
+
+            $.ajax({
+                method: "get",
+                url: "/FTT-WEB-091/pacient?patient-id=" + id
+            }).then(resp => {
+                resp = JSON.parse(resp)
+
+                if(!resp.length) {
+
+                    location.href = `/FTT-WEB-091/index.html`
+                }
+
+                resp = resp[0]
+
+                $('#pacient-name').attr('value', resp.name);
+                $('#pacient-age').attr('value', resp.age);
+                $('#pacient-weight').attr('value', resp.weight);
+            })
+        } else {
+            $('#pacient-id').hide();
+            $('#submit-save').hide();
+        }
+    }
+
+    isEdit()
+</script>
+
+</html>
