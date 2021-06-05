@@ -36,7 +36,7 @@ public class PacientApi extends HttpServlet {
 	}
 
 	private void setAccessControlHeaders(HttpServletResponse resp) {
-		resp.setHeader("Access-Control-Allow-Origin", "*");
+		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
 		resp.setHeader("Access-Control-Allow-Methods", "GET");
 		resp.setHeader("Access-Control-Allow-Methods", "POST");
 		resp.setHeader("Access-Control-Allow-Methods", "PUT");
@@ -78,15 +78,8 @@ public class PacientApi extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if (request.getParameter("pacient-name") == null || request.getParameter("pacient-age") == null
-				|| request.getParameter("pacient-weight") == null) {
-			response.setStatus(400);
-			return;
-		}
 		setAccessControlHeaders(response);
-		Pacient u = new Pacient(0, request.getParameter("pacient-name"),
-				Integer.parseInt(request.getParameter("pacient-age")),
-				Integer.parseInt(request.getParameter("pacient-weight")));
+		Pacient u = new Gson().fromJson(request.getReader(), Pacient.class);
 
 		PacientDao pacientDao = new PacientDao();
 
@@ -101,12 +94,7 @@ public class PacientApi extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Pacient u = new Pacient(
-				request.getParameter("pacient-id"),
-				request.getParameter("pacient-name"),
-				Integer.valueOf(request.getParameter("pacient-age")),
-				Integer.valueOf(request.getParameter("pacient-weight"))
-				);
+		Pacient u = new Gson().fromJson(request.getReader(), Pacient.class);
 		
 		PacientDao pacientDao = new PacientDao();
 		

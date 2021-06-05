@@ -25,12 +25,17 @@ public class PacientDao {
 		try {
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("INSERT INTO ftt.pacient (NAME, AGE, WEIGHT) VALUES (?, ?, ?)");
+					.prepareStatement("INSERT INTO ftt.pacient (NAME, AGE, WEIGHT, HEIGHT, CEP, ADDRESS, CITY, STATE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
 			// Parameters start with 1
 			preparedStatement.setString(1, pacient.getName());
 			preparedStatement.setInt(2, pacient.getAge());
 			preparedStatement.setInt(3, pacient.getWeight());
+			preparedStatement.setInt(4, pacient.getHeight());
+			preparedStatement.setString(5, pacient.getCep());
+			preparedStatement.setString(6, pacient.getAddress());
+			preparedStatement.setString(7, pacient.getCity());
+			preparedStatement.setString(8, pacient.getState());
 
 			preparedStatement.executeUpdate();
 
@@ -54,6 +59,11 @@ public class PacientDao {
 				pacient.setName(rs.getString("NAME"));
 				pacient.setAge(rs.getInt("AGE"));
 				pacient.setWeight(rs.getInt("WEIGHT"));
+				pacient.setHeight(rs.getInt("HEIGHT"));
+				pacient.setCep(rs.getString("CEP"));
+				pacient.setAddress(rs.getString("ADDRESS"));
+				pacient.setCity(rs.getString("CITY"));
+				pacient.setState(rs.getString("STATE"));
 
 				pacientList.add(pacient);
 			}
@@ -88,6 +98,11 @@ public class PacientDao {
 				userOutput.setName(rs.getString("NAME"));
 				userOutput.setAge(rs.getInt("AGE"));
 				userOutput.setWeight(rs.getInt("WEIGHT"));
+				userOutput.setHeight(rs.getInt("HEIGHT"));
+				userOutput.setCep(rs.getString("CEP"));
+				userOutput.setAddress(rs.getString("ADDRESS"));
+				userOutput.setCity(rs.getString("CITY"));
+				userOutput.setState(rs.getString("STATE"));
 
 			}
 		} catch (SQLException e) {
@@ -133,6 +148,11 @@ public class PacientDao {
                     .prepareStatement("UPDATE ftt.pacient SET NAME=?, " 
                     		                          + "AGE=?, " 
                     		                          + "Weight=? " 
+                    		                          + "HEIGHT=? " 
+                    		                          + "CEP=? " 
+                    		                          + "ADDRESS=? " 
+                    		                          + "CITY=? " 
+                    		                          + "STATE=? " 
                                                + "WHERE ID=?");
             
             /*
@@ -153,8 +173,13 @@ public class PacientDao {
             preparedStatement.setInt(2, pacient.getAge());
             //preparedStatement.setDate(3, (java.sql.Date)user.getDob());
             preparedStatement.setInt(3, pacient.getWeight());
-            
-            preparedStatement.setInt(4, pacient.getId());
+            preparedStatement.setInt(4, pacient.getHeight());
+			preparedStatement.setString(5, pacient.getCep());
+			preparedStatement.setString(6, pacient.getAddress());
+			preparedStatement.setString(7, pacient.getCity());
+			preparedStatement.setString(8, pacient.getState());
+
+            preparedStatement.setInt(9, pacient.getId());
             
             preparedStatement.executeUpdate();
 
